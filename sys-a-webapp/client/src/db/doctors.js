@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = 'http://localhost:3000/api/doctors'
+const url = '/api/doctors'
 
 class DoctorService {
     static getDoctors() {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = 'http://localhost:3000/api/requests'
+const url = '/api/requests'
 
 class RequestService {
     static getRequests(req_id, req_n) {
