@@ -2,14 +2,24 @@ import axios from "axios";
 
 const url = 'http://localhost:3000/api/episodes'
 
-class EpysodeService {
-    static insertEpisode(patient_id, doctor_id, episode_id) {
-        return axios.post(url, {
-            patient_id,
-            doctor_id,
-            episode_id
+class EpisodeService {
+    static insertEpisode(pat_id, doc_id, type_id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const res = await axios.post(url, {
+                    pat_id,
+                    doc_id,
+                    type_id
+                });
+                resolve(res.data);
+            } catch(err) {
+                resolve({
+                    "code" : 400,
+                    "message" : "Bad Insert"
+                });
+            } 
         });
     }
 }
 
-export default EpysodeService;
+export default EpisodeService;

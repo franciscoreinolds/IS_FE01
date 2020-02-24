@@ -3,7 +3,7 @@
     <v-footer
       app
       color = "teal lighten-5"
-      class="white--text"
+      class="footer white--text"
     >
         <span>
             EC - Interoperabilidade Semântica
@@ -24,6 +24,11 @@ export default {
 </script>
 
 <style scoped>
+
+.footer {
+    margin-top: 50px;
+}
+
 span {
     color:black
 }

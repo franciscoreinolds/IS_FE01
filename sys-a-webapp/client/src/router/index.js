@@ -3,8 +3,9 @@ import VueRouter from 'vue-router'
 
 import Home from '../components/Home.vue'
 import Request from '../components/Request.vue'
-import List from '../components/List.vue'
 import Episode from '../components/Episode.vue'
+import Consult from '../components/Consult.vue'
+import Change from '../components/Change.vue'
 
 Vue.use(VueRouter)
 
@@ -20,14 +21,19 @@ const routes = [
     component: Request
   },
   {
-    path : "/list",
-    name : "List",
-    component : List
-  },
-  {
     path : "/episode",
     name : "Episode",
     component : Episode
+  },
+  {
+    path : "/consult",
+    name : "Consult",
+    component : Consult
+  },
+  {
+    path : "/change",
+    name : "Change",
+    component : Change
   }
 ]
 

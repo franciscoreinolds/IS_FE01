@@ -2,7 +2,9 @@
   <v-app id="inspire">
     <Navbar />
       <v-container>
-        <router-view></router-view>
+        <router-view
+        class = "router"
+        ></router-view>
       </v-container>
     <Footer />
   </v-app>
@@ -26,5 +28,9 @@
 </script>
 
 <style lang="scss">
+
+.router { 
+  margin : 50px;
+}
 
 </style>

@@ -52,6 +52,10 @@ export default {
   data :() => ({
         menu : [
             {
+                title : "Registar Episódio",
+                link : "/episode"
+            },
+            {
                 title : "Efetuar Pedido",
                 link : "/request"
             },
@@ -60,13 +64,9 @@ export default {
                 link : "/consult"
             },
             {
-                title : "Listar Pedido",
-                link : "/list"
-            },
-            {
                 title : "Alterar Pedido",
                 link : "/change"
-            },
+            }
         ]
     }),
 }

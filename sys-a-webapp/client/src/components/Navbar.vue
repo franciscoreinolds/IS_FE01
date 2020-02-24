@@ -47,6 +47,7 @@
                 >
                 <router-link
                 :to=item.link
+                tag="span"
                 >
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </router-link>
@@ -80,6 +81,10 @@ export default {
     data :() => ({
         menu : [
             {
+                title : "Registar Episódio",
+                link : "/episode"
+            },
+            {
                 title : "Efetuar Pedido",
                 link : "/request"
             },
@@ -88,13 +93,9 @@ export default {
                 link : "/consult"
             },
             {
-                title : "Listar Pedido",
-                link : "/list"
-            },
-            {
                 title : "Alterar Pedido",
                 link : "/change"
-            },
+            }
         ]
     }),
 }

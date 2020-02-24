@@ -12,14 +12,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema heroku_6e0e3a2658f3533
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `heroku_6e0e3a2658f3533` ;
--- -----------------------------------------------------
--- Schema heroku_6e0e3a2658f3533
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema heroku_6e0e3a2658f3533
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `heroku_6e0e3a2658f3533` ;
 USE `heroku_6e0e3a2658f3533` ;
 
 -- -----------------------------------------------------
@@ -102,13 +94,14 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `heroku_6e0e3a2658f3533`.`request`
+-- Table `heroku_6e0e3a2658f3533`.`worklist`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `heroku_6e0e3a2658f3533`.`request` (
+CREATE TABLE IF NOT EXISTS `heroku_6e0e3a2658f3533`.`worklist` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date` DATETIME NOT NULL,
-  `clinical_info` VARCHAR(100) NOT NULL,
+  `clinical_info` VARCHAR(300) NOT NULL,
   `status` TINYINT NOT NULL,
+  `in_worklist` TINYINT(4) NOT NULL,
   `medical_act_id` INT NOT NULL,
   `episode_id` INT NOT NULL,
   `patient_id` INT NOT NULL,
@@ -135,9 +128,10 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `heroku_6e0e3a2658f3533`.`archive` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date` DATETIME NOT NULL,
-  `clinical_info` VARCHAR(100) NOT NULL,
+  `clinical_info` VARCHAR(300) NOT NULL,
   `status` TINYINT NOT NULL,
-  `report` VARCHAR(300) NULL,
+  `in_worklist` TINYINT(2) NOT NULL,
+  `report` VARCHAR(500) NULL,
   `medical_act_id` INT NOT NULL,
   `episode_id` INT NOT NULL,
   `patient_id` INT NOT NULL,
@@ -156,21 +150,6 @@ CREATE TABLE IF NOT EXISTS `heroku_6e0e3a2658f3533`.`archive` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-USE `heroku_6e0e3a2658f3533` ;
-
--- -----------------------------------------------------
--- Table `heroku_6e0e3a2658f3533`.`test`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `heroku_6e0e3a2658f3533`.`test` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(60) NOT NULL,
-  `address` VARCHAR(200) NOT NULL,
-  `dob` DATETIME NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 31
-DEFAULT CHARACTER SET = utf8;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
