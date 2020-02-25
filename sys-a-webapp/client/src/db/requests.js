@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const url = '/api/requests'
+//const url = 'http://localhost:3000/api/requests'
+
 
 class RequestService {
     static getRequests(req_id, req_n) {
@@ -23,25 +25,6 @@ class RequestService {
                 });
             }  
         })
-    }
-
-    static insertRequest(episode_id,  act_id, description) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.post(url, {
-                    episode_id,
-                    act_id,
-                    description
-                });
-                resolve(res.data);
-            } catch(err) {
-                console.log("Error: " + err.response.data.message);
-                resolve({
-                    "code" : 400,
-                    "message" : "Bad Insert"
-                });
-            } 
-        });
     }
 }
 

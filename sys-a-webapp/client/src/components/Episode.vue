@@ -112,3 +112,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+h1 {
+  padding-top : 25px;
+  padding-bottom : 25px;
+  margin : auto;
+  text-align : center;
+}
+
+</style>

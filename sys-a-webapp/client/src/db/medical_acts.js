@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const url = '/api/medical_acts'
+//const url = 'http://localhost:3000/api/medical_acts'
+
 
 class MedicalActsService {
     static getActs() {

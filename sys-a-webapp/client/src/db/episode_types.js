@@ -1,5 +1,7 @@
 import axios from "axios";
+
 const url = '/api/episode_types'
+//const url = 'http://localhost:3000/api/episode_types'
 
 class EpisodeTypeService {
     static getTypes() {

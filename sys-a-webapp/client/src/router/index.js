@@ -6,6 +6,8 @@ import Request from '../components/Request.vue'
 import Episode from '../components/Episode.vue'
 import Consult from '../components/Consult.vue'
 import Change from '../components/Change.vue'
+import Cancel from '../components/Cancel.vue'
+
 
 Vue.use(VueRouter)
 
@@ -34,6 +36,11 @@ const routes = [
     path : "/change",
     name : "Change",
     component : Change
+  },
+  {
+    path : "/cancel",
+    name : "Cancel",
+    component : Cancel
   }
 ]
 

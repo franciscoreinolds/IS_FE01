@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
-var mysql = require('mysql');
+const mysql = require('mysql');
+const Builder = require('hl7-builder');
+
 
 mysqlConf = require('../../db/db').mysql_pool;
 
@@ -17,6 +19,69 @@ router.get('/', (req, res) => {
         connection.release();
     });
 });
+
+// Post - Add episode
+
+function add_hl7_episode(pat_id, doc_id, type_id) {
+  
+    var message = new Builder.Message({
+        messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
+        messageEvent: 'A03',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
+        eventSegment: true,
+        delimiters: {
+            segment: '\n'
+            // field, component, repeat, escape, subComponent (unused)
+        },
+        sendingApplication: 'HL7-Sender',
+        sendingFacility: 'HL7-Sender',
+        receivingApplication: 'HL7-Receiver',
+        receivingFacility: 'HL7-Receiver',
+        messageId: Math.floor((Math.random() * 1000) + 1),
+        version: '2.3'          // Default: 2.3
+    });
+
+    
+    var evn = new Builder.Segment('EVN');
+    // EVN
+    var type_string = type_id.toString();
+
+    console.log(`type_string: ${type_string}`);
+    
+    evn.set(1,1); // event_type -> 1 <-> Episode_Creation, 2 <-> Request_Creation, 3 <-> Request_Change, 4 <-> Request Cancellation
+
+    evn.set(3,episode_id); // episode_type -> Consulta
+        
+    evn.set(4,doc_id); // doctor_id
+    
+
+    var pid = new Builder.Segment('PID');
+    // PID. 0 - CC
+    
+    pid.set(1, pat_id);
+
+    /*
+    // Add field with multiple components
+    var address = new Builder.Field();
+    address.set(0, '0000 main street');
+    address.set(2, 'Last Vegas');
+    address.set(3, 'NV');
+    address.set(4, '12345');
+    
+    // Add a repeat inside a field
+    address.repeat();
+    address.set(0, '1111 alternate street');
+    address.set(2, 'Last Vegas');
+    address.set(3, 'NV');
+    address.set(4, '12345');
+    
+    pid.set(11, address);
+    */
+
+    message.add(evn);
+    message.add(pid);
+    console.log("Message: " + message.toString());
+
+}
 
 router.post('/', (req, res, next) => {
     
@@ -62,11 +127,17 @@ router.post('/', (req, res, next) => {
                                 message: 'Bad Request'
                             });
                         }
-                        return res.status(200).send({
-                            code : 200,
-                            message : "Insertion was succesful",
-                            inserted_id : results.insertId
-                        });  
+
+                        else {
+
+                            add_hl7_episode(req.body.pat_id, req.body.doc_id, req.body.type_id);
+
+                            return res.status(200).send({
+                                code : 200,
+                                message : "Insertion was succesful",
+                                inserted_id : results.insertId
+                            });
+                        }
                     })    
                 }
             }

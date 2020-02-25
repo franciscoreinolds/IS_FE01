@@ -85,6 +85,7 @@
 <script>
 
 import MedicalActs from '../db/medical_acts';
+import WLRequests from '../db/wl_requests';
 import Requests from '../db/requests';
 
 export default {
@@ -111,7 +112,7 @@ export default {
         this.$refs.form.reset()
       },
       async createRequest() {
-        var res = await Requests.insertRequest(this.episode_id, this.type_id, this.description);
+        var res = await WLRequests.insertRequest(this.episode_id, this.type_id, this.description);
         if (res.code == 400) this.bad_id = true;
         else {
             this.inserted_id = res.inserted_id;
@@ -126,6 +127,7 @@ export default {
 
 h1 {
   padding-top : 25px;
+  padding-bottom : 25px;
   margin : auto;
   text-align : center;
 }

@@ -35,6 +35,18 @@
                         </v-card>
                         </v-dialog>
                     </v-row>
+                    <v-row justify="center">
+                        <v-dialog v-model="no_requests" persistent max-width="500">
+                        <v-card>
+                            <v-card-title class="headline">Pedido(s) não encontrado(s).</v-card-title>
+                            <v-card-text>Não foram encontrados pedidos associados à informação fornecida.</v-card-text>
+                            <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="green darken-1" text @click="no_requests = false">Voltar atrás</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                        </v-dialog>
+                    </v-row>
                 </template>
 
                 <!-- Form boxes -->
@@ -93,11 +105,20 @@
                 <p>
                     Descrição do pedido: {{item.clinical_info}}
                 </p>
-                <p v-if="item.status == 0">
+                <p v-if="item.in_worklist == 0 && item.status == 0">
+                    Estado do pedido: Relatório disponível.
+                </p>
+                <p v-if="item.in_worklist == 0 && item.status == 1">
+                    Estado do pedido: Pedido cancelado.
+                </p>
+                <p v-if="item.in_worklist == 1 && item.status == 0">
                     Estado do pedido: Exame por realizar.
                 </p>
-                <p v-else>
-                    Estado do pedido: Exame realizado. Relatório por escrever.
+                <p v-if="item.in_worklist == 1 && item.status == 1">
+                    Estado do pedido: Exame por analisar.
+                </p>
+                <p v-if="item.in_worklist == 0 && item.status == 0">
+                    Relatório : {{item.report}}
                 </p>
             </v-card-text>
             </v-card>
@@ -127,12 +148,16 @@ export default {
         req_number : null,
         bad_id : false,
         bad_data : false,
+        no_requests : false,
         requests : []
     }),
     methods : {
         async getRequests() {
             var res = await RequestService.getRequests(this.req, this.req_number);
             switch(res.code) {
+                case 201:
+                    this.no_requests = true;
+                break;
                 case 400:
                     // Bad Request
                     this.bad_data = true;
@@ -145,6 +170,11 @@ export default {
                     // It worked
                     console.log(res.results[0]);
                     this.requests = [... res.results];
+                    // in_worklist : 0 status : 0 => cancelled -> 0
+                    // in_worklist : 0 status : 1 => written_report -> 1
+                    // in_worklist : 1 status : 0 => to_examine -> 2
+                    // in_worklist : 1 status : 1 => to_analyze -> 3
+
                 break;
             }
         }
@@ -156,6 +186,7 @@ export default {
 
 h1 {
   padding-top : 25px;
+  padding-bottom : 25px;
   margin : auto;
   text-align : center;
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const url = '/api/wl_requests'
+//const url = 'http://localhost:3000/api/wl_requests'
 
 class WLRequestsService {
     static getWLRequests(req_id) {
@@ -28,6 +29,25 @@ class WLRequestsService {
         })
     }
 
+    static insertRequest(episode_id,  act_id, description) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const res = await axios.post(url, {
+                    episode_id,
+                    act_id,
+                    description
+                });
+                resolve(res.data);
+            } catch(err) {
+                console.log("Error: " + err.response.data.message);
+                resolve({
+                    "code" : 400,
+                    "message" : "Bad Insert"
+                });
+            } 
+        });
+    }
+
     static updateRequest(req_id, desc, medical_act_id, episode_id, patient_id) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -46,6 +66,29 @@ class WLRequestsService {
                 resolve({
                     "code" : 400,
                     "message" : "Bad Insert"
+                });
+            }
+        })
+    }
+
+    static cancelRequest(req) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                console.log("req");
+                console.log(req);
+                const res = await axios.delete(url, {
+                    params: { 
+                        req_id: req
+                    }
+                })
+                console.log("res.data: " + res.data.code);
+                resolve(res.data);
+            }
+            catch (err) {
+                console.log("Error");
+                resolve({
+                    "code" : 400,
+                    "message" : "Bad Cancel"
                 });
             }
         })

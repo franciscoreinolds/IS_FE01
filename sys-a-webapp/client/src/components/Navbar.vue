@@ -5,7 +5,7 @@
     height = 60px
     > 
         <v-toolbar-items
-        class = "hidden-sm-and-down"
+        class = "hidden-md-and-down"
         >
             <v-btn
             class = "ma-2"
@@ -30,7 +30,7 @@
         >
             <template v-slot:activator="{ on }">
                 <v-btn
-                class = "ma-2 hidden-md-and-up"
+                class = "ma-2 hidden-lg-and-up"
                 rounded
                 max-height = 40px
                 v-on = on
@@ -95,6 +95,10 @@ export default {
             {
                 title : "Alterar Pedido",
                 link : "/change"
+            },
+            {
+                title : "Cancelar Pedido",
+                link : "/cancel"
             }
         ]
     }),

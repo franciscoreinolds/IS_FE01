@@ -66,6 +66,10 @@ export default {
             {
                 title : "Alterar Pedido",
                 link : "/change"
+            },
+            {
+                title : "Cancelar Pedido",
+                link : "/cancel"
             }
         ]
     }),
@@ -76,9 +80,11 @@ export default {
 
 h1 {
   padding-top : 25px;
+  padding-bottom : 25px;
   margin : auto;
   text-align : center;
 }
+
 .v-card {
   padding : 25px;
   margin : 2px 2px;

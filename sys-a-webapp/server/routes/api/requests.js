@@ -5,7 +5,7 @@ const mysql = require("mysql");
 mysqlConf = require('../../db/db').mysql_pool;
 
 
-// Get
+// Get - Gets Requests based on Patient_ID / Request_ID
 
 function getRequests (connection, req_id, req_number, res) {
     if (req_id == 1) {
@@ -61,8 +61,8 @@ function getRequests (connection, req_id, req_number, res) {
                     });
                 }
                 else {
-                    return res.status(400).send({
-                        code : 400,
+                    return res.status(201).send({
+                        code : 201,
                         results : []
                     });
                 }
@@ -106,74 +106,5 @@ router.get('/', (req, res) => {
         
     });
 });
-
-// Post
-
-router.post('/', (req, res, next) => {
-    
-    mysqlConf.getConnection(function (err, connection) {
-
-        var sql = 'select * from episode where id = ?';
-
-        var query = mysql.format(sql, [req.body.episode_id]);
-
-        connection.query(query, (err, results) => {
-            
-            connection.release();
-            
-            if (err) {
-                return res.status(400).send({
-                    code: 400,
-                    message: 'Bad Requesttt'
-                });
-            }
-
-            if (results){ // results is defined
-                
-                if (!results.length) { // no episode with that id
-                    return res.status(400).send({
-                        code: 400,
-                        message: 'No episode with that id'
-                    });
-                }
-
-                else { // found episode
-                    // requests table will have its name changed to worklist
-                    // still need to increase clinical_info field's size to 300 chars
-                    var sql = 'insert into worklist (date, clinical_info, status, in_worklist, medical_act_id, episode_id, patient_id) values (?,?,?,?,?,?,?)';
-                    var now = new Date ();
-                    var values = [now.toISOString().slice(0, 19).replace('T', ' '), req.body.description, 0, 1, req.body.act_id, req.body.episode_id, results[0].patient_id];
-                    var query = mysql.format(sql, values);
-
-                    // variable setup
-
-                    connection.query(query, (err, results) => {
-                        if (err) {
-                            return res.status(400).send({
-                                code: 400,
-                                message: 'Bad Request'
-                            });
-                        }
-                        return res.status(200).send({
-                            code : 200,
-                            message : "Insertion was succesful",
-                            inserted_id : results.insertId
-                        });  
-                    })
-                    
-                   res.status(400);
-                }
-            }
-            else { // // results is undefined
-                    return res.status(400).send({
-                        code: 400,
-                        message: 'Bad Requestt'
-                    });
-            }
-        });
-    
-    });
-
-})
 
 module.exports = router;
