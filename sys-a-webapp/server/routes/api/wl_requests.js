@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
 const Builder = require("hl7-builder");
+const net = require('net');
+const HOST = '35.214.78.49';
+const PORT = 1234;
 
 mysqlConf = require('../../db/db').mysql_pool;
 
@@ -72,6 +75,26 @@ function add_hl7_request(date, description, medical_act_id, episode_id, patient_
     message.add(evn);
 
     message.add(obr);
+
+    var client = new net.Socket();
+    
+    console.log("Created socket");
+        
+    client.connect(PORT, HOST, function() {
+        console.log('CLIENT CONNECTED TO: ' + HOST + ':' + PORT);
+        // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
+        client.write(message.toString());
+        console.log("Client wrote to server");
+        client.destroy();
+    });
+
+    
+    // Add a 'close' event handler for the client socket
+    client.on('close', function() {
+        console.log('Connection closed');
+    });
+    
+    console.log("End");
 
     console.log("Message: " + message.toString());
 }

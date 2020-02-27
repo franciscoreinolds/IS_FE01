@@ -11,62 +11,65 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema heroku_ea7a9f65887d529
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `heroku_ea7a9f65887d529` ;
+CREATE SCHEMA IF NOT EXISTS `heroku_ea7a9f65887d529` DEFAULT CHARACTER SET latin1 ;
 USE `heroku_ea7a9f65887d529` ;
-
--- -----------------------------------------------------
--- Table `heroku_ea7a9f65887d529`.`patient`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`patient` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `address` VARCHAR(200) NOT NULL,
-  `dob` DATE NOT NULL,
-  `phone_number` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC))
-ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `heroku_ea7a9f65887d529`.`doctor`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`doctor` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
 -- Table `heroku_ea7a9f65887d529`.`episode_type`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`episode_type` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(80) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `heroku_ea7a9f65887d529`.`patient`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`patient` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `address` VARCHAR(200) NOT NULL,
+  `dob` DATE NOT NULL,
+  `phone_number` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
 -- Table `heroku_ea7a9f65887d529`.`episode`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`episode` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `patient_id` INT NOT NULL,
-  `doctor_id` INT NOT NULL,
-  `type_id` INT NOT NULL,
-  INDEX `fk_patient_has_doctor_doctor1_idx` (`doctor_id` ASC),
-  INDEX `fk_patient_has_doctor_patient1_idx` (`patient_id` ASC),
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `patient_id` INT(11) NOT NULL,
+  `doctor_id` INT(11) NOT NULL,
+  `type_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`, `patient_id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  INDEX `fk_patient_has_doctor_doctor1_idx` (`doctor_id` ASC),
+  INDEX `fk_patient_has_doctor_patient1_idx` (`patient_id` ASC),
   INDEX `fk_episode_episode_types1_idx` (`type_id` ASC),
-  CONSTRAINT `fk_patient_has_doctor_patient1`
-    FOREIGN KEY (`patient_id`)
-    REFERENCES `heroku_ea7a9f65887d529`.`patient` (`id`)
+  CONSTRAINT `fk_episode_episode_types1`
+    FOREIGN KEY (`type_id`)
+    REFERENCES `heroku_ea7a9f65887d529`.`episode_type` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_patient_has_doctor_doctor1`
@@ -74,82 +77,55 @@ CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`episode` (
     REFERENCES `heroku_ea7a9f65887d529`.`doctor` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_episode_episode_types1`
-    FOREIGN KEY (`type_id`)
-    REFERENCES `heroku_ea7a9f65887d529`.`episode_type` (`id`)
+  CONSTRAINT `fk_patient_has_doctor_patient1`
+    FOREIGN KEY (`patient_id`)
+    REFERENCES `heroku_ea7a9f65887d529`.`patient` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
 -- Table `heroku_ea7a9f65887d529`.`medical_act`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`medical_act` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
 -- Table `heroku_ea7a9f65887d529`.`worklist`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`worklist` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `date` DATETIME NOT NULL,
   `clinical_info` VARCHAR(300) NOT NULL,
-  `status` TINYINT NOT NULL,
+  `status` TINYINT(2) NOT NULL,
   `in_worklist` TINYINT(2) NOT NULL,
-  `medical_act_id` INT NOT NULL,
-  `episode_id` INT NOT NULL,
-  `patient_id` INT NOT NULL,
+  `medical_act_id` INT(11) NOT NULL,
+  `episode_id` INT(11) NOT NULL,
+  `patient_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_request_medical_act1_idx` (`medical_act_id` ASC),
   INDEX `fk_request_episode1_idx` (`episode_id` ASC, `patient_id` ASC),
-  CONSTRAINT `fk_request_medical_act1`
-    FOREIGN KEY (`medical_act_id`)
-    REFERENCES `heroku_ea7a9f65887d529`.`medical_act` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_request_episode1`
     FOREIGN KEY (`episode_id` , `patient_id`)
     REFERENCES `heroku_ea7a9f65887d529`.`episode` (`id` , `patient_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `heroku_ea7a9f65887d529`.`archive`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `heroku_ea7a9f65887d529`.`archive` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `date` DATETIME NOT NULL,
-  `clinical_info` VARCHAR(300) NOT NULL,
-  `status` TINYINT NOT NULL,
-  `in_worklist` TINYINT(2) NOT NULL,
-  `report` VARCHAR(500) NULL,
-  `medical_act_id` INT NOT NULL,
-  `episode_id` INT NOT NULL,
-  `patient_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-  INDEX `fk_request_medical_act1_idx` (`medical_act_id` ASC),
-  INDEX `fk_request_episode1_idx` (`episode_id` ASC, `patient_id` ASC),
-  CONSTRAINT `fk_request_medical_act10`
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_request_medical_act1`
     FOREIGN KEY (`medical_act_id`)
     REFERENCES `heroku_ea7a9f65887d529`.`medical_act` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_request_episode10`
-    FOREIGN KEY (`episode_id` , `patient_id`)
-    REFERENCES `heroku_ea7a9f65887d529`.`episode` (`id` , `patient_id`)
-    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
