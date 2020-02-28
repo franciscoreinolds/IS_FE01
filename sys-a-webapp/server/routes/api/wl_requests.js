@@ -226,6 +226,27 @@ function update_hl7_request(date, description, medical_act_id, episode_id, patie
 
     message.add(obr);
 
+    var client = new net.Socket();
+    
+    console.log("Created socket");
+        
+    client.connect(PORT, HOST, function() {
+        console.log('CLIENT CONNECTED TO: ' + HOST + ':' + PORT);
+        // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
+        client.write(message.toString());
+        console.log("Client wrote to server");
+        client.destroy();
+    });
+
+    
+    // Add a 'close' event handler for the client socket
+    client.on('close', function() {
+        console.log('Connection closed');
+    });
+    
+    console.log("End");
+
+
     console.log("Message: " + message.toString());
 
 }
