@@ -176,7 +176,7 @@ router.post('/', (req, res, next) => {
 
 // Put - Updates a Request in the Worklist
 
-function update_hl7_request(date, description, medical_act_id, episode_id, patient_id, request_id) {
+function update_hl7_request(old_req, date, description, medical_act_id, episode_id, patient_id, request_id) {
     
     var message = new Builder.Message({
         messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
@@ -219,6 +219,8 @@ function update_hl7_request(date, description, medical_act_id, episode_id, patie
     obr.set(4, 0); // status
 
     obr.set(5, 1); // in_worklist
+
+    obr.set(6,old_req); // old_request_id
 
     message.add(pid);
 
@@ -264,6 +266,8 @@ router.put('/', (req, res) => {
             }
         });
 
+        var old_req = [req.body.req_id];
+
         sql = "insert into worklist (date, clinical_info, status, in_worklist, medical_act_id, episode_id, patient_id) values (?,?,?,?,?,?,?)";
         var now = new Date;
         console.log("desc: " + req.body.description);
@@ -279,7 +283,7 @@ router.put('/', (req, res) => {
             
             else {
 
-                update_hl7_request(now.toISOString().slice(0, 19).replace('T', ' '), req.body.description, req.body.act_id, req.body.episode_id, req.body.patient_id, results.insertId);
+                update_hl7_request(old_req, now.toISOString().slice(0, 19).replace('T', ' '), req.body.description, req.body.act_id, req.body.episode_id, req.body.patient_id, results.insertId);
 
                 return res.status(200).send({
                     code : 200,
