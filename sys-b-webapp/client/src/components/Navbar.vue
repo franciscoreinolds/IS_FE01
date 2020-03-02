@@ -80,20 +80,8 @@ export default {
     data :() => ({
         menu : [
             {
-                title : "Efetuar Pedido",
-                link : "/request"
-            },
-            {
-                title : "Consultar Pedido",
-                link : "/consult"
-            },
-            {
-                title : "Listar Pedido",
+                title : "Listar Pedidos",
                 link : "/list"
-            },
-            {
-                title : "Alterar Pedido",
-                link : "/change"
             },
         ]
     }),

@@ -10,14 +10,12 @@
 
 <script>
   import Navbar from "./components/Navbar"
-  import Home from "./components/Home"
+  import List from "./components/List"
   import Footer from "./components/Footer"
-  
-  import Request from "./components/Request"
 
   export default {
     components : {
-      Navbar, Home, Footer, Request
+      Navbar, List, Footer
     },
     data: () => ({
       
@@ -26,5 +24,9 @@
 </script>
 
 <style lang="scss">
+
+.router { 
+  margin : 50px;
+}
 
 </style>

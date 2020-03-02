@@ -23,3 +23,13 @@ insert into medical_act (id, name) values (2, 'Anestesiologia');
 insert into medical_act (id, name) values (3, 'Dermatologia');
 insert into medical_act (id, name) values (4, 'Neurologia');
 insert into medical_act (id, name) values (5, 'Urologia');
+
+-- episode
+
+insert into episode (id, patient_id, doctor_id, type_id) values (2, 2, 2, 1);
+
+-- worklist
+
+insert into worklist (id, date, clinical_info, status, in_worklist, medical_act_id, episode_id, patient_id) values (2, '2020-01-02 10:10:10', 'A morrer', 1, 0, 4, 2, 2);
+insert into worklist (id, date, clinical_info, status, in_worklist, medical_act_id, episode_id, patient_id) values (3, '2020-01-03 10:10:10', 'A morrer mesmo', 1, 1, 2, 2, 2);
+insert into worklist (id, date, clinical_info, status, in_worklist, medical_act_id, episode_id, patient_id) values (4, '2020-01-04 10:10:10', 'A morrer mesmo sem exame', 0, 1, 1, 2, 2);
