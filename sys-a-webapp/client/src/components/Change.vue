@@ -72,7 +72,7 @@
                         <v-text-field
                         label = "Descrição atualizada"
                         v-model = "description"
-                        :rules="[v => (v || '').length > 0 || 'É necessário adicionar uma descrição ao pedido.', v => (v || '').length <= 300 || 'É permitido um máximo de 300 carateres']"
+                        :rules="[v => (v || '').length > 0 || 'Adicione um relatório ao pedido', v => (v || '').length <= 300 || 'É permitido um máximo de 300 carateres']"
                         required
                         >
                         </v-text-field>

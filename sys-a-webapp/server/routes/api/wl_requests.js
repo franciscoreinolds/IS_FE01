@@ -24,9 +24,9 @@ router.get('/', (req, res) => {
     });
 });
 
-// Reads a Request into Worklist
+// Post - Inserts a Request into Worklist
 
-function read_request(request_id) {
+function add_hl7_request(date, description, medical_act_id, episode_id, patient_id, request_id) {
     var message = new Builder.Message({
         messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
         messageEvent: 'A03',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04

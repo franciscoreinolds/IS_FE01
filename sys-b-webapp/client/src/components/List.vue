@@ -1,6 +1,19 @@
 <template>
     <div>
         <h1>Lista de pedidos</h1>
+        <template>
+                <v-row justify="center">
+                    <v-dialog v-model="updated" persistent max-width="500">
+                    <v-card>
+                        <v-card-title class="headline">Exame realizado.</v-card-title>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" text @click="reload">Voltar atrás</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                    </v-dialog>
+                </v-row>
+            </template>
         <v-container>
             <v-col
                 cols = "12"
@@ -9,59 +22,69 @@
                     <v-select
                         :items="types"
                         label="Filtrar por:"
-                        @change="changeRoute"
                     ></v-select>
                 </v-flex>
+                <v-form
+                >
+                <v-container>
                 <v-card
                     class = "ma-1"
                     text-align = "center"
                     v-for="item in requests"
                     :key="item.index"
                 >
-                <v-card-title>
-                    Pedido nº: {{item.id}}
-                </v-card-title>
-                <v-card-text>
-                <p>
-                    Nº CC do Paciente : {{item.patient_id}}
-                </p>
-                <p>
-                    Data do Pedido : {{item.date}}
-                </p>
-                <p>
-                    Descrição do pedido: {{item.clinical_info}}
-                </p>
-                <p v-if="item.in_worklist == 0 && item.status == 0">
-                    Estado do pedido: Relatório disponível.
-                </p>
-                <p v-if="item.in_worklist == 0 && item.status == 1">
-                    Estado do pedido: Pedido cancelado.
-                </p>
-                <p v-if="item.in_worklist == 1 && item.status == 0">
-                    Estado do pedido: Exame por realizar.
-                    <br>
-                    <br>
-                    <v-btn
-                        :new_id = "item.id"
-                        color="teal lighten-5"
-                        @click="executeExam"
+                    <v-card-title>
+                        Pedido nº: {{item.id}}
+                    </v-card-title>
+                    <v-card-text>
+                    <p>
+                        Nº CC do Paciente : {{item.patient_id}}
+                    </p>
+                    <p>
+                        Data do Pedido : {{item.date}}
+                    </p>
+                    <p>
+                        Descrição do pedido: {{item.clinical_info}}
+                    </p>
+                    <p v-if="item.in_worklist == 0 && item.status == 0">
+                        Estado do pedido: Relatório disponível.
+                    </p>
+                    <p v-if="item.in_worklist == 0 && item.status == 1">
+                        Estado do pedido: Pedido cancelado.
+                    </p>
+                    <p v-if="item.in_worklist == 1 && item.status == 0">
+                        Estado do pedido: Exame por realizar.
+                        <br>
+                        <br>
+                        <v-btn
+                            :new_id = "item.id"
+                            color="teal lighten-5"
+                            @click="executeExam(item.id)"
+                        >
+                        Efetuar Exame
+                        </v-btn>
+                    </p>
+                    <v-text-field
+                        v-if="item.in_worklist == 1 && item.status == 1"
+                        v-model="newReport"
+                        label="Insira o relatório aqui"
+                        :rules="[v => (v || '').length > 0 || 'Adicione um relatório ao pedido', v => (v || '').length <= 500 || 'É permitido um máximo de 500 carateres']"
+                        required
                     >
-                    Efetuar Exame
-                    </v-btn>
-                </p>
-                <p v-if="item.in_worklist == 1 && item.status == 1">
-                    Estado do pedido: Relatório por realizar.
-                    <br>
-                    <br>
+
+                    </v-text-field>
                     <v-btn
+                        v-if="item.in_worklist == 1 && item.status == 1"
                         color="teal lighten-5"
-                        to = "/report"
+                        class="mr-4"
+                        @click="send_report(item.id)"
                     >
-                    Escrever Relatório
+                        Submeter
                     </v-btn>
-                </p>
-            </v-card-text>
-            </v-card>
+                    </v-card-text>
+                </v-card>
+                </v-container>
+                </v-form>
             </v-col>
         </v-container>
     </div>
@@ -79,21 +102,45 @@ export default {
     },
     data: () => ({
         requests : [],
-        new_id : null,
         types : ['Todos','Relatório por realizar','Exame por realizar'],
         error : '',
+        updated : false,
+        newReport : ""
     }),
     async created () {
         try {
             this.requests = await RequestService.getRequests();
         } catch( err) {
-            this.error = err.mssage
+            this.error = err.message
         }
     },
     methods: {
-        executeExam() {
-            console.log(this.new_id)
-            RequestService.executeExam();
+        async executeExam(new_id) {
+            console.log(new_id)
+            var res = await RequestService.executeExam(new_id);
+            if (res.code == 200) {
+                console.log("Sucessful update");
+                this.updated = true;
+                // this.$router.go()
+            }
+            else { 
+                console.error("Oops");
+            }
+        },
+        async send_report(new_id) {
+            console.log(new_id)
+            var res = await RequestService.send_report(new_id, this.newReport);
+            if (res.code == 200) {
+                console.log("Sucessful report written");
+                this.updated = true;
+                // this.$router.go()
+            }
+            else { 
+                console.error("Oops");
+            }
+        },
+        reload() {
+            this.$router.go();
         }
     }
 }

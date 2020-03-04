@@ -26,59 +26,7 @@ router.get('/', (req, res) => {
 
 // Post - Analyze exam from each Request
 
-function analyze_exam(request_id) {
-    var message = new Builder.Message({
-        messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
-        messageEvent: 'A03',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
-        eventSegment: true,
-        delimiters: {
-            segment: '\n'
-            // field, component, repeat, escape, subComponent (unused)
-        },
-        sendingApplication: 'HL7-Receiver',
-        sendingFacility: 'HL7-Receiver',
-        receivingApplication: 'HL7-Sender',
-        receivingFacility: 'HL7-Sender',
-        messageId: Math.floor((Math.random() * 1000) + 1),
-        version: '2.3'          // Default: 2.3
-    });
 
-    var evn = new Builder.Segment('EVN');
-    // EVN
-    
-    evn.set(1,6); // event_type -> 1 <-> Episode_Creation, 2 <-> Request_Creation, 3 <-> Request_Change, 4 <-> Request Cancellation, 5 <-> ..., 6 <-> Analyze exam
-
-    var obr = new Builder.Segment('OBR');
-    // OBR
-
-    obr.set(1,request_id); // request_id
-
-    message.add(evn);
-
-    message.add(obr);
-
-    var client = new net.Socket();
-    
-    console.log("Created socket");
-        
-    client.connect(PORT, HOST, function() {
-        console.log('CLIENT CONNECTED TO: ' + HOST + ':' + PORT);
-        // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
-        client.write(message.toString());
-        console.log("Client wrote to server");
-        client.destroy();
-    });
-
-    
-    // Add a 'close' event handler for the client socket
-    client.on('close', function() {
-        console.log('Connection closed');
-    });
-    
-    console.log("End");
-
-    console.log("Message: " + message.toString());
-}
 
 router.post('/', (req, res, next) => {
     
