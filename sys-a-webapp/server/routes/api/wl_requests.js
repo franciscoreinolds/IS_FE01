@@ -85,13 +85,13 @@ function add_hl7_request(date, description, medical_act_id, episode_id, patient_
         // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
         client.write(message.toString());
         console.log("Client wrote to server");
-        client.destroy();
     });
 
     
     // Add a 'close' event handler for the client socket
     client.on('close', function() {
         console.log('Connection closed');
+        client.destroy();
     });
     
     console.log("End");
@@ -237,13 +237,13 @@ function update_hl7_request(old_req, date, description, medical_act_id, episode_
         // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
         client.write(message.toString());
         console.log("Client wrote to server");
-        client.destroy();
     });
 
     
     // Add a 'close' event handler for the client socket
     client.on('close', function() {
         console.log('Connection closed');
+        client.destroy();
     });
     
     console.log("End");
