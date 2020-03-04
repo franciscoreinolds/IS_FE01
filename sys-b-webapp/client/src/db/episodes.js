@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const url = 'http://localhost:3000/api/episodes'
+const url = '/api/episodes'
+//const url = 'http://localhost:3000/api/episodes'
 
 class EpysodeService {
     static insertEpisode(patient_id, doctor_id, episode_id) {

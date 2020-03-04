@@ -4,7 +4,7 @@ const mysql = require("mysql");
 const Builder = require("hl7-builder");
 const net = require('net');
 const HOST = '35.214.87.121';
-const PORT = 1235;
+const PORT = 1234;
 
 mysqlConf = require('../../db/db').mysql_pool;
 
@@ -43,30 +43,6 @@ router.get('/exam', (req, res) => {
         connection.release();
     });
 });
-
-router.put('/', (req, res) => {
-    const db = mysqlConf.getConnection(function (err, connection) {
-        let sql = "update worklist set status = 1 where id = ?";
-        var query = mysql.format(sql, [req.body.req_id]);
-        console.log(query)
-        connection.query(query, (err, result) => {
-            if (err) {
-                return res.status(400).send({
-                    code: 400,
-                    message: 'Bad Update'
-                });
-            }
-            else {
-                analyze_exam(req.body.req_id);
-                return res.status(200).send({
-                    code : 200,
-                    message : "Update was succesful"
-                }); 
-            }      
-        })
-        connection.release();
-    });
-})
 
 function analyze_exam(request_id) {
     var message = new Builder.Message({
@@ -117,12 +93,38 @@ function analyze_exam(request_id) {
     // Add a 'close' event handler for the client socket
     client.on('close', function() {
         console.log('Connection closed');
+        client.destroy();
     });
     
     console.log("End");
 
     console.log("Message: " + message.toString());
 }
+
+
+router.put('/', (req, res) => {
+    const db = mysqlConf.getConnection(function (err, connection) {
+        let sql = "update worklist set status = 1 where id = ?";
+        var query = mysql.format(sql, [req.body.req_id]);
+        console.log(query)
+        connection.query(query, (err, result) => {
+            if (err) {
+                return res.status(400).send({
+                    code: 400,
+                    message: 'Bad Update'
+                });
+            }
+            else {
+                analyze_exam(req.body.req_id);
+                return res.status(200).send({
+                    code : 200,
+                    message : "Update was succesful"
+                }); 
+            }      
+        })
+        connection.release();
+    });
+})
 
 
 function send_report(info, report) {
@@ -156,7 +158,7 @@ function send_report(info, report) {
 
     obr.set(1,info.id); // request_id
 
-    obr.set(2,info.date);
+    obr.set(2,info.date.toISOString().slice(0, 19).replace('T', ' '));
 
     obr.set(3,info.clinical_info);
 
@@ -182,13 +184,20 @@ function send_report(info, report) {
         client.write(message.toString());
         console.log("Client wrote to server");
         client.destroy();
+
     });
 
     
     // Add a 'close' event handler for the client socket
     client.on('close', function() {
         console.log('Connection closed');
+        client.destroy();
     });
+
+    client.on('error', function(ex) {
+        console.log("handled error");
+        console.log(ex);
+      });
     
     console.log("End");
 
@@ -203,6 +212,7 @@ router.post('/', (req, res) => {
         console.log(query)
         connection.query(query, (err, result) => {
             if (err) {
+                console.log("Error 400");
                 return res.statuaas(400).send({
                     code: 400,
                     message: 'Bad Select'
@@ -228,6 +238,9 @@ router.post('/', (req, res) => {
                             });
                         }
                         else {
+                            //console.log(result[0]);
+                            //console.log(result[0].date);
+                            //console.log("day: " + result[0].date.getDay());
                             send_report(result[0],req.body.report);
                             return res.status(200).send({
                                 code: 200,

@@ -72,6 +72,7 @@ function add_hl7_episode(episode_id, pat_id, doc_id, type_id) {
         // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
         client.write(message.toString());
         console.log(`Client wrote: ${message.toString()} to server`);
+        client.destroy();
     });
     
     

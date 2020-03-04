@@ -1,11 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
-const Builder = require("hl7-builder");
-const net = require('net');
-const HOST = '35.214.78.49';
-const PORT = 1234;
-
 mysqlConf = require('../../db/db').mysql_pool;
 
 

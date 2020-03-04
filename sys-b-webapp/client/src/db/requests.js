@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const url = 'http://localhost:3000/api/requests'
+const url = '/api/requests'
+//const url = 'http://localhost:3000/api/requests'
 const urlreport = 'http://localhost:3000/api/requests/report'
 const urlexam = 'http://localhost:3000/api/requests/exam'
 
