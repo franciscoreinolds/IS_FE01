@@ -41,6 +41,25 @@ class RequestService {
             }  
         })
     }
+    static executeExam() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const res = await axios.put(url, {
+                    status : 1
+                });
+                console.log("res.data: " + res.data.code);
+                resolve(res.data);
+            }   
+            catch(err) {
+                console.log("Error");
+                resolve({
+                    "code" : 400,
+                    "message" : "Bad Insert"
+                });
+            }
+        })
+    }
+
 }
 
 export default RequestService;

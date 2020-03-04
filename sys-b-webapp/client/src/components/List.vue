@@ -9,6 +9,7 @@
                     <v-select
                         :items="types"
                         label="Filtrar por:"
+                        @change="changeRoute"
                     ></v-select>
                 </v-flex>
                 <v-card
@@ -38,9 +39,26 @@
                 </p>
                 <p v-if="item.in_worklist == 1 && item.status == 0">
                     Estado do pedido: Exame por realizar.
+                    <br>
+                    <br>
+                    <v-btn
+                        :new_id = "item.id"
+                        color="teal lighten-5"
+                        @click="executeExam"
+                    >
+                    Efetuar Exame
+                    </v-btn>
                 </p>
                 <p v-if="item.in_worklist == 1 && item.status == 1">
                     Estado do pedido: Relatório por realizar.
+                    <br>
+                    <br>
+                    <v-btn
+                        color="teal lighten-5"
+                        to = "/report"
+                    >
+                    Escrever Relatório
+                    </v-btn>
                 </p>
             </v-card-text>
             </v-card>
@@ -61,6 +79,7 @@ export default {
     },
     data: () => ({
         requests : [],
+        new_id : null,
         types : ['Todos','Relatório por realizar','Exame por realizar'],
         error : '',
     }),
@@ -69,6 +88,12 @@ export default {
             this.requests = await RequestService.getRequests();
         } catch( err) {
             this.error = err.mssage
+        }
+    },
+    methods: {
+        executeExam() {
+            console.log(this.new_id)
+            RequestService.executeExam();
         }
     }
 }

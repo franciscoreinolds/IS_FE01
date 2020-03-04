@@ -81,7 +81,7 @@ export default {
         menu : [
             {
                 title : "Listar Pedidos",
-                link : "/list"
+                link : "/"
             },
         ]
     }),
