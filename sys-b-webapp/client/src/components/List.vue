@@ -13,7 +13,20 @@
                     </v-card>
                     </v-dialog>
                 </v-row>
-            </template>
+        </template>
+        <template>
+                <v-row justify="center">
+                    <v-dialog v-model="updated_report" persistent max-width="500">
+                    <v-card>
+                        <v-card-title class="headline">Relatório realizado.</v-card-title>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" text @click="reload">Voltar atrás</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                    </v-dialog>
+                </v-row>
+        </template>
         <v-container>
             <v-col
                 cols = "12"
@@ -118,6 +131,7 @@ export default {
         error : '',
         currItem : null,
         updated : false,
+        updated_report : false,
         newReport : ""
     }),
     methods: {
@@ -142,7 +156,7 @@ export default {
             var res = await RequestService.send_report(new_id, this.newReport);
             if (res.code == 200) {
                 console.log("Sucessful report written");
-                this.updated = true;
+                this.updated_report = true;
                 // this.$router.go()
             }
             else { 
