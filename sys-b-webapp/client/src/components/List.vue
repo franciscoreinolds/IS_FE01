@@ -18,12 +18,20 @@
             <v-col
                 cols = "12"
             >
-                <v-flex xs12 sm6 d-flex>
-                    <v-select
-                        :items="types"
-                        label="Filtrar por:"
-                    ></v-select>
-                </v-flex>
+                <v-select
+                    v-model="currItem"
+                    :items = "types"
+                    item-text = "name"
+                    item-value = "value"
+                    label="Filtrar por:"
+                ></v-select>
+                <v-btn
+                    color = "teal lighten-5"
+                    class = "mr-4"
+                    @click = "getRequests"
+                    >
+                    Filtrar
+                </v-btn>
                 <v-form
                 >
                 <v-container>
@@ -64,23 +72,23 @@
                         Efetuar Exame
                         </v-btn>
                     </p>
-                    <v-text-field
-                        v-if="item.in_worklist == 1 && item.status == 1"
-                        v-model="newReport"
-                        label="Insira o relatório aqui"
-                        :rules="[v => (v || '').length > 0 || 'Adicione um relatório ao pedido', v => (v || '').length <= 500 || 'É permitido um máximo de 500 carateres']"
-                        required
-                    >
-
-                    </v-text-field>
-                    <v-btn
-                        v-if="item.in_worklist == 1 && item.status == 1"
-                        color="teal lighten-5"
-                        class="mr-4"
-                        @click="send_report(item.id)"
-                    >
-                        Submeter
-                    </v-btn>
+                    <p v-if="item.in_worklist == 1 && item.status == 1">
+                        <v-textarea
+                            v-model="newReport"
+                            auto-grow
+                            height="150"
+                            label="Insira o relatório aqui"
+                            :rules="[v => (v || '').length <= 500 || 'É permitido um máximo de 500 carateres']"
+                        >
+                        </v-textarea>
+                        <v-btn
+                            color="teal lighten-5"
+                            class="mr-4"
+                            @click="send_report(item.id)"
+                        >
+                        Submeter Relatório
+                        </v-btn>
+                    </p>
                     </v-card-text>
                 </v-card>
                 </v-container>
@@ -102,19 +110,21 @@ export default {
     },
     data: () => ({
         requests : [],
-        types : ['Todos','Relatório por realizar','Exame por realizar'],
+        types : [
+            { name: "Todos", value: 0 },
+            { name: "Relatório por realizar", value: 1 },
+            { name: "Exame por realizar", value: 2 }
+        ],
         error : '',
+        currItem : null,
         updated : false,
         newReport : ""
     }),
-    async created () {
-        try {
-            this.requests = await RequestService.getRequests();
-        } catch( err) {
-            this.error = err.message
-        }
-    },
     methods: {
+        async getRequests() {
+            console.log(this.currItem)
+            this.requests = await RequestService.getRequests(this.currItem);
+        },
         async executeExam(new_id) {
             console.log(new_id)
             var res = await RequestService.executeExam(new_id);

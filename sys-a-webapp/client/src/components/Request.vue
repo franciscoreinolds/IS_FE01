@@ -111,14 +111,14 @@ export default {
       reset () {
         this.$refs.form.reset()
       },
-      async createRequest() {
-        var res = await WLRequests.insertRequest(this.episode_id, this.type_id, this.description);
-        if (res.code == 400) this.bad_id = true;
-        else {
-            this.inserted_id = res.inserted_id;
-            this.good_id = true;
+        async createRequest() {
+            var res = await WLRequests.insertRequest(this.episode_id, this.type_id, this.description);
+            if (res.code == 400) this.bad_id = true;
+            else {
+                this.inserted_id = res.inserted_id;
+                this.good_id = true;
+            }
         }
-      }
     }
 }
 </script>

@@ -1,46 +1,47 @@
 import axios from "axios";
 
-const url = '/api/requests'
-//const url = 'http://localhost:3000/api/requests'
+const url = 'http://localhost:3000/api/requests'
 const urlreport = 'http://localhost:3000/api/requests/report'
 const urlexam = 'http://localhost:3000/api/requests/exam'
 
 class RequestService {
-    static getRequests() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(url);
-                const data = res.data;
-                resolve(data);
-                console.log("requests: " + data);
-            } catch(err) {
-                reject(err);
-            }  
-        })
-    }
-    static getReportRequests() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(urlreport);
-                const data = res.data;
-                resolve(data);
-                console.log("report requests: " + data);
-            } catch(err) {
-                reject(err);
-            }  
-        })
-    }
-    static getExamRequests() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(urlexam);
-                const data = res.data;
-                resolve(data);
-                console.log("exam requests: " + data);
-            } catch(err) {
-                reject(err);
-            }  
-        })
+    static getRequests(currItem) {
+        if(currItem == 1) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const res = await axios.get(urlreport);
+                    const data = res.data;
+                    resolve(data);
+                    console.log("report requests: " + data);
+                } catch(err) {
+                    reject(err);
+                }  
+            })
+        }
+        else if(currItem == 2) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const res = await axios.get(urlexam);
+                    const data = res.data;
+                    resolve(data);
+                    console.log("exam requests: " + data);
+                } catch(err) {
+                    reject(err);
+                }  
+            })
+        }
+        else {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const res = await axios.get(url);
+                    const data = res.data;
+                    resolve(data);
+                    console.log("requests: " + data);
+                } catch(err) {
+                    reject(err);
+                }  
+            })
+        }
     }
     static executeExam(new_id) {
         return new Promise(async (resolve, reject) => {

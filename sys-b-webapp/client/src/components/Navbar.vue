@@ -14,7 +14,6 @@
             max-height = 40px
             v-for="item in menu"
             :key="item.index"
-            flat
             large
             >
                 <router-link
