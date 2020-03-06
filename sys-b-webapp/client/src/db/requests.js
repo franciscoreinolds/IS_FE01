@@ -1,8 +1,12 @@
 import axios from "axios";
 
-const url = 'http://localhost:3000/api/requests'
-const urlreport = 'http://localhost:3000/api/requests/report'
-const urlexam = 'http://localhost:3000/api/requests/exam'
+const url = '/api/requests'
+const urlreport = '/api/requests/report'
+const urlexam = '/api/requests/exam'
+
+//const url = 'http://localhost:3000/api/requests'
+//const urlreport = 'http://localhost:3000/api/requests/report'
+//const urlexam = 'http://localhost:3000/api/requests/exam'
 
 class RequestService {
     static getRequests(currItem) {
