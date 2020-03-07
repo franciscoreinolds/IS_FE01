@@ -28,8 +28,8 @@ router.get('/', (req, res) => {
 
 function add_hl7_request(date, description, medical_act_id, episode_id, patient_id, request_id) {
     var message = new Builder.Message({
-        messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
-        messageEvent: 'A03',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
+        messageType: 'ORM',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
+        messageEvent: 'OO1',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
         eventSegment: true,
         delimiters: {
             segment: '\n'
@@ -43,6 +43,7 @@ function add_hl7_request(date, description, medical_act_id, episode_id, patient_
         version: '2.3'          // Default: 2.3
     });
 
+    /*
     var evn = new Builder.Segment('EVN');
     // EVN
     
@@ -51,11 +52,20 @@ function add_hl7_request(date, description, medical_act_id, episode_id, patient_
     evn.set(2,episode_id); // episode_id -> Consulta
         
     evn.set(5,medical_act_id); // medical_act_id -> Anestesiologia, ...
+    */
 
     var pid = new Builder.Segment('PID');
     // PID
 
     pid.set(1,patient_id); // patient_id
+
+    var orc = new Builder.Segment('ORC');
+
+    orc.set(1, 'NW'); // new exam
+
+    orc.set(2, episode_id); // episode_id
+
+    orc.set(5, medical_act_id); // medical_act_id
 
     var obr = new Builder.Segment('OBR');
     // OBR
@@ -72,7 +82,9 @@ function add_hl7_request(date, description, medical_act_id, episode_id, patient_
 
     message.add(pid);
 
-    message.add(evn);
+    message.add(orc);
+
+    // message.add(evn);
 
     message.add(obr);
 
@@ -180,8 +192,8 @@ router.post('/', (req, res, next) => {
 function update_hl7_request(old_req, date, description, medical_act_id, episode_id, patient_id, request_id) {
     
     var message = new Builder.Message({
-        messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
-        messageEvent: 'A03',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
+        messageType: 'ORM',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
+        messageEvent: '001',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
         eventSegment: true,
         delimiters: {
             segment: '\n'
@@ -195,6 +207,7 @@ function update_hl7_request(old_req, date, description, medical_act_id, episode_
         version: '2.3'          // Default: 2.3
     });
 
+    /*
     var evn = new Builder.Segment('EVN');
 
     evn.set(1,3); // event_type -> 1 <-> Episode_Creation, 2 <-> Request_Creation, 3 <-> Request_Change, 4 <-> Request Cancellation
@@ -202,11 +215,20 @@ function update_hl7_request(old_req, date, description, medical_act_id, episode_
     evn.set(2,episode_id); // episode_id -> Consulta
         
     evn.set(5,medical_act_id); // medical_act_id -> Anestesiologia, ...
+    */
 
     var pid = new Builder.Segment('PID');
     // PID
 
     pid.set(1,patient_id); // patient_id
+
+    var orc = new Builder.Segment('ORC');
+
+    orc.set(1, 'UP');
+
+    orc.set(2, episode_id);
+
+    orc.set(5, medical_act_id);
 
     var obr = new Builder.Segment('OBR');
     // OBR
@@ -217,15 +239,13 @@ function update_hl7_request(old_req, date, description, medical_act_id, episode_
 
     obr.set(3, description); // clinical_info
 
-    obr.set(4, 0); // status
-
-    obr.set(5, 1); // in_worklist
-
-    obr.set(6,old_req); // old_request_id
+    obr.set(5,old_req); // old_request_id
 
     message.add(pid);
 
-    message.add(evn);
+    message.add(orc);
+
+    //message.add(evn);
 
     message.add(obr);
 

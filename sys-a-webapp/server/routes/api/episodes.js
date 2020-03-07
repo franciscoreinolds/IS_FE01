@@ -55,12 +55,18 @@ function add_hl7_episode(episode_id, pat_id, doc_id, type_id) {
         
     evn.set(4,doc_id); // doctor_id
 
+    var orc = new Builder.Segment('ORC');
+
+    orc.set(1, 'NE');
+    
     var pid = new Builder.Segment('PID');
     // PID. 0 - CC
     
     pid.set(1, pat_id);
 
     message.add(evn);
+
+    message.add(orc);
 
     message.add(pid);
 
