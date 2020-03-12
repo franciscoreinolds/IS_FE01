@@ -44,10 +44,10 @@ router.get('/exam', (req, res) => {
     });
 });
 
-function analyze_exam(request_id) {
+function analyze_exam(request_id, patient_id) {
     var message = new Builder.Message({
-        messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
-        messageEvent: 'A03',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
+        messageType: 'ORM',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
+        messageEvent: 'O01',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
         eventSegment: true,
         delimiters: {
             segment: '\n'
@@ -60,7 +60,7 @@ function analyze_exam(request_id) {
         messageId: Math.floor((Math.random() * 1000) + 1),
         version: '2.3'          // Default: 2.3
     });
-
+/*
     var evn = new Builder.Segment('EVN');
     // EVN
     
@@ -74,8 +74,28 @@ function analyze_exam(request_id) {
     message.add(evn);
 
     message.add(obr);
-    
-    console.log("before socket");
+*/
+    var pid = new Builder.Segment('PID');
+    // PID
+
+    pid.set(3,patient_id); // patient_id
+
+    var orc = new Builder.Segment('ORC');
+
+    orc.set(1, 'SC');
+
+    var obr = new Builder.Segment('OBR');
+    // OBR
+
+    obr.set(1,request_id); // request_id
+
+    message.add(pid);
+
+    message.add(orc);
+
+    //message.add(evn);
+
+    message.add(obr);
 
     var client = new net.Socket();
     
@@ -105,7 +125,7 @@ function analyze_exam(request_id) {
 router.put('/', (req, res) => {
     const db = mysqlConf.getConnection(function (err, connection) {
         let sql = "update worklist set status = 1 where id = ?";
-        var query = mysql.format(sql, [req.body.req_id]);
+        var query = mysql.format(sql, [req.body.req_id, req.body.patient_id]);
         console.log(query)
         connection.query(query, (err, result) => {
             if (err) {
@@ -115,7 +135,7 @@ router.put('/', (req, res) => {
                 });
             }
             else {
-                analyze_exam(req.body.req_id);
+                analyze_exam(req.body.req_id, req.body.patient_id);
                 return res.status(200).send({
                     code : 200,
                     message : "Update was succesful"
@@ -130,8 +150,8 @@ router.put('/', (req, res) => {
 function send_report(info, report) {
 
     var message = new Builder.Message({
-        messageType: 'ADT',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
-        messageEvent: 'A03',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
+        messageType: 'ORU',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
+        messageEvent: 'R01',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
         eventSegment: true,
         delimiters: {
             segment: '\n'
@@ -144,7 +164,7 @@ function send_report(info, report) {
         messageId: Math.floor((Math.random() * 1000) + 1),
         version: '2.3'          // Default: 2.3
     });
-
+/*
     var evn = new Builder.Segment('EVN');
     // EVN
     evn.set(2,info.episode_id);
@@ -173,6 +193,38 @@ function send_report(info, report) {
     message.add(evn);
 
     message.add(obr);
+*/
+    var pid = new Builder.Segment('PID');
+    // PID
+
+    pid.set(3,info.patient_id); // patient_id
+
+    var orc = new Builder.Segment('ORC');
+
+    orc.set(1, 'RE');
+
+    var obr = new Builder.Segment('OBR');
+    // OBR
+
+    obr.set(1,info.id); // request_id
+
+    var obx = new Builder.Segment('OBX');
+
+    obx.set(1, '1');
+
+    obx.set(2, 'TX');
+
+    obx.set(5, report)
+
+    message.add(pid);
+
+    message.add(orc);
+
+    //message.add(evn);
+
+    message.add(obr);
+
+    message.add(obx);
 
     var client = new net.Socket();
     
@@ -213,7 +265,7 @@ router.post('/', (req, res) => {
         connection.query(query, (err, result) => {
             if (err) {
                 console.log("Error 400");
-                return res.statuaas(400).send({
+                return res.status(400).send({
                     code: 400,
                     message: 'Bad Select'
                 });

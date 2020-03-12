@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const url = '/api/requests'
-const urlreport = '/api/requests/report'
-const urlexam = '/api/requests/exam'
+//const url = '/api/requests'
+//const urlreport = '/api/requests/report'
+//const urlexam = '/api/requests/exam'
 
-//const url = 'http://localhost:3000/api/requests'
-//const urlreport = 'http://localhost:3000/api/requests/report'
-//const urlexam = 'http://localhost:3000/api/requests/exam'
+const url = 'http://localhost:3000/api/requests'
+const urlreport = 'http://localhost:3000/api/requests/report'
+const urlexam = 'http://localhost:3000/api/requests/exam'
 
 class RequestService {
     static getRequests(currItem) {
@@ -47,11 +47,12 @@ class RequestService {
             })
         }
     }
-    static executeExam(new_id) {
+    static executeExam(new_id, pat_id) {
         return new Promise(async (resolve, reject) => {
             try {
                 const res = await axios.put(url, {
-                    req_id : new_id
+                    req_id : new_id,
+                    patient_id : pat_id
                 });
                 console.log("res.data: " + res.data.code);
                 resolve(res.data);

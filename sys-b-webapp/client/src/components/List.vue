@@ -79,8 +79,9 @@
                         <br>
                         <v-btn
                             :new_id = "item.id"
+                            :pat_id = "item.patient_id"
                             color="teal lighten-5"
-                            @click="executeExam(item.id)"
+                            @click="executeExam(item.id, item.patient_id)"
                         >
                         Efetuar Exame
                         </v-btn>
@@ -139,9 +140,10 @@ export default {
             console.log(this.currItem)
             this.requests = await RequestService.getRequests(this.currItem);
         },
-        async executeExam(new_id) {
+        async executeExam(new_id,pat_id) {
             console.log(new_id)
-            var res = await RequestService.executeExam(new_id);
+            console.log(pat_id)
+            var res = await RequestService.executeExam(new_id,pat_id);
             if (res.code == 200) {
                 console.log("Sucessful update");
                 this.updated = true;

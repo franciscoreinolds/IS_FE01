@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
 function add_hl7_request(date, description, medical_act_id, episode_id, patient_id, request_id) {
     var message = new Builder.Message({
         messageType: 'ORM',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
-        messageEvent: 'OO1',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
+        messageEvent: 'O01',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
         eventSegment: true,
         delimiters: {
             segment: '\n'
@@ -193,7 +193,7 @@ function update_hl7_request(old_req, date, description, medical_act_id, episode_
     
     var message = new Builder.Message({
         messageType: 'ORM',     // Required. Demographics - ADT, Orders - ORM, Results - ORU, Charges - DFT
-        messageEvent: '001',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
+        messageEvent: 'O01',    // Required. Admit a Patient - A01, Transfer - A02, Discharge - A03, Register - A04
         eventSegment: true,
         delimiters: {
             segment: '\n'
