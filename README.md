@@ -1,6 +1,6 @@
 ### HL7 - Communication Protocol ###
 
-# Assignment for Interoperability Semantics #
+# 1st Assignment for Interoperability Semantics #
 
 # Goal #
 
